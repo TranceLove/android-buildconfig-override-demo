@@ -74,20 +74,27 @@ dependencies {
 
 def getProperty(String propName, String defaultValue) {
     def propsFile = rootProject.file('local.properties')
+    String retval = null
     if (propsFile.exists()) {
         def props = new Properties()
         props.load(new FileInputStream(propsFile))
         if(props.containsKey(propName))
-            return props[propName]
+            retval = props[propName]
         else
             if(System.getenv(propName) != null)
-                return System.getenv(propName)
+                retval = System.getenv(propName)
             else
-                return System.getProperty(propName, defaultValue)
+                retval = System.getProperty(propName, defaultValue)
     } else {
         if(System.getenv(propName) != null)
-            return System.getenv(propName)
+            retval = System.getenv(propName)
         else
-            return System.getProperty(propName, defaultValue)
+            retval = System.getProperty(propName, defaultValue)
     }
+    if (!retval.startsWith("\""))
+        retval = "\"" + retval
+    if (!retval.endsWith("\""))
+        retval += "\""
+
+    return retval
 }
