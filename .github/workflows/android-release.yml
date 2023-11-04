@@ -1,0 +1,28 @@
+name: Release Build
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    name: Build release apk
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out
+        uses: actions/checkout@v1
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: 11
+          distribution: "corretto"
+          cache: "gradle"
+      - name: Build with Gradle
+        run: ./gradlew assembleRelease
+      - name: Upload apk file
+        uses: actions/upload-artifact@v1
+        with:
+          name: apk
+          path: app/build/outputs/apk/release/app-release-unsigned.apk
