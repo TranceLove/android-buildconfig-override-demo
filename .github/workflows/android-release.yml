@@ -9,7 +9,7 @@ jobs:
   build:
     name: Build release apk
     runs-on: ubuntu-latest
-
+    environment: RELEASE_BUILD
     steps:
       - name: Check out
         uses: actions/checkout@v1
@@ -20,6 +20,8 @@ jobs:
           distribution: "corretto"
           cache: "gradle"
       - name: Build with Gradle
+        env:
+          EXAMPLE_APP_NAME: "${{ secrets.EXAMPLE_APP_NAME }}"
         run: ./gradlew assembleRelease
       - name: Upload apk file
         uses: actions/upload-artifact@v1
