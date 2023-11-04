@@ -19,7 +19,7 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
-        buildConfigField("String", "EXAMPLE_APP_NAME", System.getProperty("EXAMPLE_APP_NAME", "\"This is default name of the Android App\""))
+        buildConfigField("String", "EXAMPLE_APP_NAME", getProperty("EXAMPLE_APP_NAME", "\"This is default name of the Android App!\""))
     }
 
     buildTypes {
@@ -32,11 +32,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '17'
     }
     buildFeatures {
         compose true
@@ -69,4 +69,24 @@ dependencies {
     androidTestImplementation 'androidx.compose.ui:ui-test-junit4'
     debugImplementation 'androidx.compose.ui:ui-tooling'
     debugImplementation 'androidx.compose.ui:ui-test-manifest'
+}
+
+def getProperty(String propName, String defaultValue) {
+    def propsFile = rootProject.file('local.properties')
+    if (propsFile.exists()) {
+        def props = new Properties()
+        props.load(new FileInputStream(propsFile))
+        if(props.containsKey(propName))
+            return props[propName]
+        else
+            if(System.getenv(propName) != null)
+                return System.getenv(propName)
+            else
+                return System.getProperty(propName, defaultValue)
+    } else {
+        if(System.getenv(propName) != null)
+            return System.getenv(propName)
+        else
+            return System.getProperty(propName, defaultValue)
+    }
 }
